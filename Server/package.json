@@ -1,0 +1,18 @@
+{
+  "name": "notich_server",
+  "version": "1.0.0",
+  "description": "Server side of notich app",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "node server.js",
+    "start": "node server.js"
+  },
+  "author": "corvo corpso",
+  "license": "ISC",
+  "dependencies": {
+    "@langchain/openai": "^0.0.14",
+    "dotenv": "^16.4.4",
+    "langchain": "^0.1.18"
+  }
+}
