@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.BG-Custom_Gradiant{
+    background: linear-gradient(to bottom, #030712 0%,#111827 100%);
+}
