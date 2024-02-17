@@ -8,7 +8,7 @@
     import "./app.css"
     import SignIn from "./pages/SignIn.svelte";
     import SignUp from "./pages/SignUp.svelte";
-    import token from "./lib/auth.js";
+    import { token,logedin} from "./lib/auth.js";
     import NoteSelector from "./pages/NoteSelector.svelte";
 
     //Check Login
@@ -16,6 +16,7 @@
 
     export let url = "";
     if (loCo !== "") {
+        logedin.set(true)
         token.set(loCo)
         navigate("/app")
     }

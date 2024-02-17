@@ -1,8 +1,6 @@
 <script>
     import FormLine from "./Components/FormLine.svelte";
     import {lurl} from "../lib/url.js";
-    import {setCookie} from "svelte-cookie";
-    import token from "../lib/auth.js";
     import {navigate} from "svelte-routing";
 
     let username = ""
@@ -37,7 +35,7 @@
 </script>
 
 <div class="w-screen h-screen flex justify-center items-center">
-    <div class="rounded w-1/3 h-1/2 bg-white p-12">
+    <div class="rounded w-1/3 min-h-12 bg-white p-12">
         <form class="flex flex-col" on:submit|preventDefault={SignUp}>
             <FormLine>
                 <label for="username">Username</label>

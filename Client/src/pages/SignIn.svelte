@@ -1,7 +1,7 @@
 <script>
     import {lurl} from "../lib/url.js";
     import {setCookie} from "svelte-cookie";
-    import token from "../lib/auth.js";
+    import {token, logedin} from "../lib/auth.js";
     import FormLine from "./Components/FormLine.svelte";
     import {navigate} from "svelte-routing";
 
@@ -25,6 +25,7 @@
             }
             setCookie('loginBT', res.token, 30, true)
             token.set(res.token)
+            logedin.set(true)
             navigate("/app")
         })
 
@@ -32,7 +33,7 @@
 </script>
 
 <div class="w-screen h-screen flex justify-center items-center">
-    <div class="rounded w-1/3 h-1/2 bg-white p-12">
+    <div class="rounded w-1/3 min-h-12 bg-white p-12">
         <form class="flex flex-col" on:submit|preventDefault={SignIn}>
             <FormLine>
                 <label for="username">Username</label>
