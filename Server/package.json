@@ -5,16 +5,20 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "test": "node server.js",
-    "start": "node server.js"
+    "test": "nodemon server.js __DEV__=true",
+    "start": "nodemon server.js __DEV__=true"
   },
   "author": "corvo corpso",
   "license": "ISC",
   "dependencies": {
     "@langchain/openai": "^0.0.14",
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.4.4",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
     "langchain": "^0.1.18",
+    "mongoose": "^8.1.3",
+    "nodemon": "^3.0.3",
     "socket.io": "^4.7.4"
   }
 }
