@@ -6,37 +6,6 @@
     <title>Notich - Homepage</title>
 </svelte:head>
 
-<header class="bg-gray-950 flex flex-col">
-    <noscript>
-        <div class="bg-red-700 text-center text-white">Javascript is not enabled! Please enable it in order for this
-            website to work correctly!
-        </div>
-    </noscript>
-
-    <nav class="w-full sticky flex-grow lg:flex lg:items-center lg:w-auto min-h-12">
-        <div class="flex flex-1 space-x-6 text-white text-xl pl-3">
-            <a href="#about" class="hover:text-amber-300 hover:underline hover:underline-offset-4">About</a>
-            <a href="#get_started" class="hover:text-amber-300 hover:underline hover:underline-offset-4">Get Started</a>
-            <a href="#contact" class="hover:text-amber-300 hover:underline hover:underline-offset-4">Contact</a>
-        </div>
-
-        <div class="flex space-x-6 text-white text-xl pr-3">
-            <Link to="/SignIn">
-                <div class="bg-gray-700 text-white p-2 hover:bg-gray-600 rounded">
-                    Sign In
-                </div>
-            </Link>
-
-            <Link to="/SignUp">
-                <div class="bg-gray-200 hover:bg-gray-100 text-neutral-900 p-2 rounded">
-                    Sign Up
-                </div>
-            </Link>
-
-        </div>
-    </nav>
-</header>
-
 <header class="BG-Custom_Gradiant flex flex-col text-center items-center pt-3">
     <div class="flex justify-between w-1/2">
         <div class="flex flex-col justify-center">

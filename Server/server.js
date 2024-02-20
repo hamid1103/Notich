@@ -1,12 +1,20 @@
+import * as http from "http";
 import 'dotenv/config'
 import { ChatOpenAI } from "@langchain/openai"
-import express from 'express';
 import apiRouter from "./Routers/api.js";
 import {connectDB} from "./db.js";
 
-
+import { Server } from "socket.io";
+import express from 'express';
 const app = express()
+const server = http.createServer(app)
+const io = new Server(server)
+
 const port = process.env.PORT | 3000
+
+server.listen(port, ()=>{
+    console.log("HTTP Server running with expressjs... Connecting to DB")
+})
 
 connectDB()
 
@@ -14,16 +22,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', apiRouter)
 
-app.listen(port, ()=>{
-    console.log("Listening on port " + port)
-})
 
-const model = new ChatOpenAI({
-    azureOpenAIApiKey: process.env.AZURE_OPENAI_API_KEY,
-    azureOpenAIApiVersion: process.env.OPENAI_API_VERSION,
-    azureOpenAIApiInstanceName: process.env.INSTANCE_NAME,
-    azureOpenAIApiDeploymentName: process.env.ENGINE_NAME,
-})
+
+//Send compiled svelte files
+//app.get('/', )
+
 
 /**
  * Await answer
@@ -34,4 +37,4 @@ const model = new ChatOpenAI({
  *
  * */
 
-console.log(process.env.AZURE_OPENAI_API_KEY)
+export {io}

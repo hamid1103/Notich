@@ -1,3 +1,20 @@
+import {writable} from "svelte/store";
+
+/**
+ *
+ * @type {Writable<{Message: string, Color: string, Show: boolean}>}
+ */
+export const BroadcastMessage = writable({
+    "Color": "",
+    "Show": false,
+    "Message": ""
+})
+
+export function matchRuleShort(str, rule) {
+    var escapeRegex = (str) => str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+    return new RegExp("^" + rule.split("*").map(escapeRegex).join(".*") + "$").test(str);
+}
+
 /**
  *
  * Use like this

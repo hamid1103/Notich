@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@editorjs/editorjs": "^2.29.0",
+    "feather-icons": "^4.29.1",
     "socket.io-client": "^4.7.4",
     "svelte-cookie": "^1.0.1"
   }
