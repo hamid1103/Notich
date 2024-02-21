@@ -1,7 +1,7 @@
 import {ChatOpenAI} from "@langchain/openai";
 import 'dotenv/config'
 import Sentiment from "sentiment"
-import { HumanMessage, SystemMessage, AIMessage } from "langchain/chat_models/messages"
+import { HumanMessage, SystemMessage, AIMessage } from "@langchain/core/messages"
 
 /**
  * Class to initiate an AI instance. There should be one per active session.
@@ -17,23 +17,30 @@ export class NotichBot {
     //Current Stream contents put in a string.
     StreamString;
 
+    _botStarted = false;
     /**
      *
      * @param SavedChatHistory found in SavedChat documents
      * @param SavedAISettings found in Note documents
      */
-    constructor(SavedChatHistory, SavedAISettings) {
+    constructor(SavedChatHistory = chatBotCharacterContexts.Nick.ChatStart, SavedAISettings = {
+        temperature: 0.3
+    }) {
+        //If SavedChatHistory doesn't exist, start with default character Nick.
         this.ChatHistory = SavedChatHistory
-        this.AISettings = SavedAISettings | {
-            temperature: 0.3
-        }
-        this.model = new ChatOpenAI({
+        this.AISettings = SavedAISettings
+    }
+
+    InitBot = async () =>{
+        this._botStarted = true
+        this.model = await new ChatOpenAI({
             azureOpenAIApiKey: process.env.AZURE_OPENAI_API_KEY,
             azureOpenAIApiVersion: process.env.OPENAI_API_VERSION,
             azureOpenAIApiInstanceName: process.env.INSTANCE_NAME,
             azureOpenAIApiDeploymentName: process.env.ENGINE_NAME,
             temperature: this.AISettings.temperature,
         })
+        return true
     }
 
     RemoveChatEntry(Index){

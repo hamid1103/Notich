@@ -1,40 +1,44 @@
 import {NotichBot} from "../AI/OpenAIConnection.js";
 import Note from "../Models/Note.js";
+import SavedChatNote from "../Models/SavedChatNote.js";
 
 /**
  * A session that contains a socket.io room, note data and AI instance
  */
 export class Session {
+    //List of Users allowed in this session.
+    Users ={};
     //SocketIO Room ID. Needs to be the same as Note document object ID.
     RoomID;
-    //Document Name
-    Name;
     //AI Bot instance;
     Bot;
     //Bot instance created status
-    botLoaded;
+    botLoaded = false;
     //Note Document Data
     DocumentData;
 
-    /**
-     *
-     * @param NoteID
-     * @param createdCallback
-     */
-    constructor(NoteID, createdCallback) {
+    async initSession(NoteID){
         this.RoomID = NoteID
-        this.initSession()
+        let documentNote = await Note.findById(NoteID);
+        this.DocumentData = documentNote;
+        let ChatHistoryNote = await SavedChatNote.findOne({
+            Note: NoteID
+        }).populate('SavedChat')
+        if(ChatHistoryNote){
+            this.Bot = new NotichBot(ChatHistoryNote.SavedChat.Chat, ChatHistoryNote.SavedChat.temperature);
+        }else {
+            this.Bot = new NotichBot();
+        }
+        await this.Bot.InitBot();
+        this.botLoaded = this.Bot._botStarted
     }
 
-    async initSession(){
-        let documentNote = await Note.findById(this.RoomID);
-        this.Name = documentNote.name;
-        this.DocumentData = documentNote.content;
-
-    }
-
-    initBot = async ()=>{
-        //Fetch
+    AddUser(usr){
+        this.Users[usr._id] = {
+            username: usr.username,
+            role: usr.role,
+            email: usr.email
+        }
     }
 
 }
@@ -44,17 +48,30 @@ export let SessionList =
 
     }
 
-export const StartSession = async (req, res)=>{
+export const StartSession = async (req)=>{
+    SessionList[req.params.id] = new Session()
+    await SessionList[req.params.id].initSession(req.params.id)
+    SessionList[req.params.id].AddUser(req.user);
+    return SessionList[req.params.id]
+}
 
+export const ConnectToSession = async (req) =>{
+    SessionList[req.params.id].AddUser(req.user);
+    return SessionList[req.params.id]
 }
 
 export const CheckForExistingSession = async (req, res) =>{
-
+    let session;
+    if(SessionList[req.params.id]){
+        session = await ConnectToSession(req)
+    }else {
+        session = await StartSession(req)
+    }
+    res.json(session)
 }
+
+
 
 export const CloseSession = async (req, res) =>{
-
-}
-export const ConnectToSession = async (req, res) =>{
 
 }

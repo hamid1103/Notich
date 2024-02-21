@@ -10,6 +10,7 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.0.2",
+    "@tailwindcss/typography": "^0.5.10",
     "autoprefixer": "^10.4.17",
     "postcss": "^8.4.35",
     "svelte": "^4.2.10",
@@ -19,6 +20,8 @@
   },
   "dependencies": {
     "@editorjs/editorjs": "^2.29.0",
+    "@editorjs/header": "^2.8.1",
+    "@editorjs/paragraph": "^2.11.3",
     "feather-icons": "^4.29.1",
     "socket.io-client": "^4.7.4",
     "svelte-cookie": "^1.0.1"

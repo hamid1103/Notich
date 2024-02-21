@@ -4,11 +4,12 @@ import { ChatOpenAI } from "@langchain/openai"
 import apiRouter from "./Routers/api.js";
 import {connectDB} from "./db.js";
 
-import { Server } from "socket.io";
 import express from 'express';
+import {Server} from "socket.io";
+import {runSIO} from "./Controllers/Workspace.js";
 const app = express()
 const server = http.createServer(app)
-const io = new Server(server)
+runSIO(server)
 
 const port = process.env.PORT | 3000
 
@@ -23,7 +24,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api', apiRouter)
 
 
-
 //Send compiled svelte files
 //app.get('/', )
 
@@ -36,5 +36,3 @@ app.use('/api', apiRouter)
  *
  *
  * */
-
-export {io}

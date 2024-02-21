@@ -11,6 +11,7 @@
   "author": "corvo corpso",
   "license": "ISC",
   "dependencies": {
+    "@langchain/core": "^0.1.30",
     "@langchain/openai": "^0.0.14",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.4",

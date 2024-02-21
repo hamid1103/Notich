@@ -6,14 +6,19 @@
     import {BroadcastMessage} from "../lib/Tools.js";
     import Editor from "./Components/Editor.svelte";
     import Sidebar_Popout from "./Components/Sidebar_Popout.svelte";
+    import {CSIO, Socket} from "../lib/WorkspaceSession.js";
 
     export let id;
     let saveStatus = "", AIStatus = "";
     let forbidden = false;
+    let CSIOC
+    let socket
+    let sessionData;
 
-    const getNote = async () => {
-        const response = await fetch(`${lurl}/api/notes/${id}`, {
+    const getSession = async () => {
+        const response = await fetch(`${lurl}/api/session/${id}`, {
             method: "GET",
+            mode: "cors",
             headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${$token}`},
         })
         if (!response.ok) {
@@ -34,15 +39,18 @@
         } else {
             let data = response.json()
             console.log(data)
+            sessionData = data
+            CSIOC = CSIO(sessionData)
+            Socket.emit("JoinRoom", id, $token)
             return data;
         }
     }
 
-    let notePromise = getNote()
+    let sessionPromise = getSession()
 
 </script>
 
-{#await notePromise}
+{#await sessionPromise}
     <div class="h-screen w-screen flex flex-col justify-center align-middle items-center">
         <svg class="animate-spin -ml-1 mr-3 h-1/6 w-1/6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
              viewBox="0 0 24 24">
@@ -54,12 +62,12 @@
 {:then ed}
     <div class="flex justify-center w-screen">
         <div class="sticky top-1 bg-gray-100 rounded mb-4 mt-4 w-9/12 p-1">
-            <input class="font-bold font-sans bg-gray-100 max-w-sm text-ellipsis" value="{ed.note.name}">
+            <input class="font-bold font-sans bg-gray-100 max-w-sm text-ellipsis" value="{ed.DocumentData.name}">
 
         </div>
     </div>
     <div class="flex flex-col justify-center align-middle items-center">
-        <Editor data={ed.note}/>
+        <Editor data={ed.DocumentData} socket={Socket}/>
     </div>
 
     <Sidebar_Popout direction="left">

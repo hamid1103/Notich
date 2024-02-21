@@ -2,7 +2,11 @@ import mongoose from "mongoose";
 
 const savedChatSchema = new mongoose.Schema(
     {
-        Chat: [[String]]
+        Chat: [[String]],
+        Temperature: {
+            type: Number,
+            default: 0.3
+        }
     }, { timestamps: true }
 )
 
