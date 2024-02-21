@@ -15,6 +15,7 @@ export const runSIO = async (server) => {
     io.on("connection", (socket) => {
         let CurRoomID;
         let CurRoom;
+        let Selected = {};
         console.log("Connected")
 
         //Session Connection Management
@@ -57,6 +58,7 @@ export const runSIO = async (server) => {
 
         //Editor Socket Functions
         socket.on("SelectBlock", (bindex) => {
+            Selected[bindex] = true
             socket.broadcast.emit("DisableBlock", bindex)
         })
 
@@ -68,7 +70,20 @@ export const runSIO = async (server) => {
             socket.broadcast.emit("ReceiveNewBlock", CBI, Val)
         })
 
+        socket.on("RemoveBlock", (CBI)=>{
+            socket.broadcast.emit("ReceiveRemoveBlock", CBI)
+        })
+
+        socket.on("CheckSelected", (CBI)=> {
+            if (Selected[CBI]){
+                socket.emit("EnableBlock", CBI)
+            } else{
+                socket.emit("DisableBlock", CBI)
+            }
+        })
+
         socket.on("DeselectBlock", (bindex) => {
+            delete Selected[bindex]
             socket.broadcast.emit("EnableBlock", bindex)
         })
 
