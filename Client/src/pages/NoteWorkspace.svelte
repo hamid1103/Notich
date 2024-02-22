@@ -79,6 +79,17 @@
 
     <Sidebar_Popout direction="right">
         <h2 class="text-neutral-900 font-bold text-center">Chat with the bot</h2>
+        <div class="h-auto w-44 overflow-y-clip flex justify-center">
+            <div class="flex flex-col-reverse align-middle items-center">
+                <div class="">
+                    <!--Chat input here-->
+                    <input type="text">
+                </div>
+                <div class="flex flex-col">
+                    <!--Chats Here-->
+                </div>
+            </div>
+        </div>
     </Sidebar_Popout>
 {:catch error}
     <div class="h-screen w-screen flex flex-col justify-center align-middle items-center">

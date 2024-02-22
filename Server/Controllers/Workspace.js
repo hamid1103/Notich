@@ -3,7 +3,6 @@ import {SessionList} from "./Sessions.js";
 import {Server} from "socket.io";
 import jwt from "jsonwebtoken";
 import User from "../Models/User.js";
-import e from "express";
 import Note from "../Models/Note.js";
 
 export const runSIO = async (server) => {

@@ -7,8 +7,6 @@
 
     export let data, socket;
 
-    console.log(data)
-
     onDestroy(() => {
         socket.emit("Leave")
     })
