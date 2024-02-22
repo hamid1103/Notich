@@ -4,6 +4,7 @@ import {Server} from "socket.io";
 import jwt from "jsonwebtoken";
 import User from "../Models/User.js";
 import e from "express";
+import Note from "../Models/Note.js";
 
 export const runSIO = async (server) => {
     const io = new Server(server, {
@@ -15,7 +16,7 @@ export const runSIO = async (server) => {
     io.on("connection", (socket) => {
         let CurRoomID;
         let CurRoom;
-        let Selected = {};
+        let Selected;
         console.log("Connected")
 
         //Session Connection Management
@@ -58,24 +59,12 @@ export const runSIO = async (server) => {
 
         //Editor Socket Functions
         socket.on("SelectBlock", (bindex) => {
-            Selected[bindex] = true
+            Selected = true
             socket.broadcast.emit("DisableBlock", bindex)
         })
 
-        socket.on("EditBlock", (CBI, Val) => {
-            socket.broadcast.emit("ReceiveEdit", CBI, Val)
-        })
-
-        socket.on("AddBlock", (CBI, Val) => {
-            socket.broadcast.emit("ReceiveNewBlock", CBI, Val)
-        })
-
-        socket.on("RemoveBlock", (CBI)=>{
-            socket.broadcast.emit("ReceiveRemoveBlock", CBI)
-        })
-
         socket.on("CheckSelected", (CBI)=> {
-            if (Selected[CBI]){
+            if (Selected === CBI){
                 socket.emit("EnableBlock", CBI)
             } else{
                 socket.emit("DisableBlock", CBI)
@@ -83,8 +72,17 @@ export const runSIO = async (server) => {
         })
 
         socket.on("DeselectBlock", (bindex) => {
-            delete Selected[bindex]
+            Selected = null
             socket.broadcast.emit("EnableBlock", bindex)
+        })
+
+        socket.on("SaveDoc", async (data)=>{
+            CurRoom.DocumentData.content = data.blocks
+            await Note.findByIdAndUpdate(CurRoomID, { content: data.blocks}).then(()=>{
+                //Gen vectors?
+                console.log("SAVED ")
+                socket.emit("DataSaved")
+            })
         })
 
     })

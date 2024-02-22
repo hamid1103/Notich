@@ -6,12 +6,18 @@
     import Header from '@editorjs/header'
 
     export let data, socket;
-    onDestroy(()=>{
+
+    console.log(data)
+
+    onDestroy(() => {
         socket.emit("Leave")
     })
 
     import EditorJS from '@editorjs/editorjs';
 
+    let isSaving = false;
+    let editorjsContentHolder;
+    let DocumentNodes;
     let CurrentBlockIndex;
     let CurrentBlock
     let ReceivedEdit = false;
@@ -27,33 +33,25 @@
         },
         defaultBlock: 'paragraph',
         autofocus: true,
-        onChange: async (api, event) => {
-            console.log(event)
+        onChange: async (api, event)=>{
             switch (event.type){
                 case "block-added":
-                    if(!ReceivedBlock){
-                        let details = await editor.blocks.getBlockByIndex(event.detail.index).save()
-                        socket.emit("AddBlock", event.detail.index, details)
-                        socket.emit("DeselectBlock", CurrentBlockIndex)
-                        CurrentBlockIndex = editor.blocks.getCurrentBlockIndex()
-                        CurrentBlock = editor.blocks.getBlockByIndex(CurrentBlockIndex)
-                        socket.emit("SelectBlock", CurrentBlockIndex)
-                    }else {
-                        console.log("Received New Block Message ")
+                    if (!ReceivedBlock) {
+                    } else {
                     }
                     break;
                 case "block-changed":
-                    if(!ReceivedEdit){
+                    if (!ReceivedEdit) {
                         let details = await editor.blocks.getBlockByIndex(event.detail.index).save()
                         socket.emit("EditBlock", event.detail.index, details)
-                    }else {
+                    } else {
                         socket.emit("CheckSelected", event.detail.index)
                         ReceivedEdit = false
                     }
 
                     break;
                 case "block-removed":
-                    if(!ReceivedRemove){
+                    if (!ReceivedRemove) {
                         socket.emit("RemoveBlock", event.detail.index)
                     }
                     ReceivedRemove = false
@@ -61,57 +59,126 @@
                 case "block-moved":
                     break;
             }
-
         },
         /**
          * ID of Element that should contain Editor instance
          */
-        holder: 'editorjs'
-    });
-
-    let blockFocus = async (e)=>{
-        CurrentBlockIndex = editor.blocks.getCurrentBlockIndex()
-        CurrentBlock = editor.blocks.getBlockByIndex(CurrentBlockIndex)
-        socket.emit("SelectBlock", CurrentBlockIndex)
-    }
-
-    socket.on("ReceiveNewBlock", async (CBI, Val)=>{
-        ReceivedBlock = true;
-        if(!Val.Config)
-        {
-            console.log(Val)
-            editor.blocks.insert(Val.tool, Val.data, {}, CBI)
-        }else{
-
+        holder: 'editorjs',
+        data: {
+            blocks: data.content
+        }
+    })
+    addEventListener('keydown', e=>{
+        if(e.ctrlKey && e.key==='s'){
+            e.preventDefault();
+            SaveDoc();
         }
     })
 
-    socket.on("ReceiveEdit", (CBI, Val)=>{
+    let SaveDoc = async ()=>{
+        if(isSaving)
+            return
+        isSaving = true
+        DocumentNodes = editorjsContentHolder.querySelectorAll('[contenteditable=true]')
+        console.log(DocumentNodes)
+        for (let i = 0; i<DocumentNodes.length; i++){
+            let item = DocumentNodes.item(i)
+            item.contentEditable = false
+            item.classList.add("bg-gray-900")
+        }
+        editor.save().then((data)=>{
+            console.log(data)
+            socket.emit("SaveDoc", data)
+        })
+    }
+
+    socket.on("DataSaved", ()=>{
+        console.log("DATA SAVED, " + DocumentNodes.length)
+        isSaving = false
+        for (let i = 0; i<DocumentNodes.length; i++){
+            let item = DocumentNodes.item(i)
+            item.contentEditable = true
+            item.classList.remove("bg-gray-900")
+        }
+    })
+
+    /*socket.on("ReceiveNewBlock", async (CBI, Val) => {
+        ReceivedBlock = true;
+        if (!Val.Config) {
+            console.log(Val)
+            editor.blocks.insert(Val.tool, Val.data, {}, CBI)
+        } else {
+
+        }
+    })
+    socket.on("ReceiveRemoveBlock", (CBI) => {
+        ReceivedRemove = true;
+        editor.blocks.delete(CBI)
+    })*/
+    /*let multiplayerOnChange = async (api, event) => {
+        console.log(event)
+        switch (event.type) {
+            case "block-added":
+                if (!ReceivedBlock) {
+                    let details = await editor.blocks.getBlockByIndex(event.detail.index).save()
+                    socket.emit("AddBlock", event.detail.index, details)
+                    socket.emit("DeselectBlock", CurrentBlockIndex)
+                    CurrentBlockIndex = editor.blocks.getCurrentBlockIndex()
+                    CurrentBlock = editor.blocks.getBlockByIndex(CurrentBlockIndex)
+                    socket.emit("SelectBlock", CurrentBlockIndex)
+                } else {
+                    console.log("Received New Block Message ")
+                }
+                break;
+            case "block-changed":
+                if (!ReceivedEdit) {
+                    let details = await editor.blocks.getBlockByIndex(event.detail.index).save()
+                    socket.emit("EditBlock", event.detail.index, details)
+                } else {
+                    socket.emit("CheckSelected", event.detail.index)
+                    ReceivedEdit = false
+                }
+
+                break;
+            case "block-removed":
+                if (!ReceivedRemove) {
+                    socket.emit("RemoveBlock", event.detail.index)
+                }
+                ReceivedRemove = false
+                break;
+            case "block-moved":
+                break;
+        }
+    }*/
+
+    socket.on("ReceiveEdit", (CBI, Val) => {
         ReceivedEdit = true;
         console.log(`Receive Change for block ${CBI}`)
         console.log(Val)
         let getblock = editor.blocks.getBlockByIndex(CBI)
         editor.blocks.update(getblock.id, Val.data)
-    } )
-
-    socket.on("ReceiveRemoveBlock", (CBI)=>{
-        ReceivedRemove = true;
-        editor.blocks.delete(CBI)
     })
 
-    let blockUnfocus = async (e)=>{
+    let blockFocus = async (e) => {
+        CurrentBlockIndex = editor.blocks.getCurrentBlockIndex()
+        CurrentBlock = editor.blocks.getBlockByIndex(CurrentBlockIndex)
+        socket.emit("SelectBlock", CurrentBlockIndex)
+    }
+    let blockUnfocus = async (e) => {
         socket.emit("DeselectBlock", CurrentBlockIndex)
     }
 
-    socket.on("EnableBlock", (bindex)=>{
+    socket.on("EnableBlock", (bindex) => {
         let block = editor.blocks.getBlockByIndex(bindex)
         block.config.readOnly = false
+        block.holder.contentEditable = "true"
         block.holder.classList.remove("bg-gray-500")
     })
 
-    socket.on("DisableBlock",(bindex)=>{
+    socket.on("DisableBlock", (bindex) => {
         let block = editor.blocks.getBlockByIndex(bindex)
-        if(block){
+        if (block) {
+            block.holder.contentEditable = "false"
             block.config.readOnly = true
             block.holder.classList.add("bg-gray-500")
         }
@@ -120,7 +187,7 @@
 </script>
 
 <div class="bg-gray-100 w-1/2 rounded p-5">
-    <article class="sm:prose-sm md:prose lg:prose-xl">
-        <div id="editorjs" class="rounded border-2 p-2" on:focusin={blockFocus} on:focusout={blockUnfocus}> </div>
+    <article class="prose-xl">
+        <div id="editorjs" bind:this={editorjsContentHolder} class="rounded border-2 p-2" on:focusin={blockFocus} on:focusout={blockUnfocus}></div>
     </article>
 </div>

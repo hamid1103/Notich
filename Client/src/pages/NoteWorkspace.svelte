@@ -20,30 +20,32 @@
             method: "GET",
             mode: "cors",
             headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${$token}`},
-        })
-        if (!response.ok) {
-            console.log(response.status)
-            if (response.status === 401) {
-                deleteCookie('loginBT')
-                token.set('')
-                logedin.set(false)
-                BroadcastMessage.set({
-                    "Color": "red",
-                    "Show": true,
-                    "Message": "You are not logged in!"
-                })
-                navigate('/SignIn')
-            } else if (response.status === 403) {
-                throw new Error("You do not have access to this note!")
+        }).then((response)=>{
+            if (!response.ok) {
+                console.log(response.status)
+                if (response.status === 401) {
+                    deleteCookie('loginBT')
+                    token.set('')
+                    logedin.set(false)
+                    BroadcastMessage.set({
+                        "Color": "red",
+                        "Show": true,
+                        "Message": "You are not logged in!"
+                    })
+                    navigate('/SignIn')
+                } else if (response.status === 403) {
+                    throw new Error("You do not have access to this note!")
+                }
             }
-        } else {
-            let data = response.json()
-            console.log(data)
+            return response.json();
+        }).then((data)=>{
             sessionData = data
             CSIOC = CSIO(sessionData)
             Socket.emit("JoinRoom", id, $token)
+            console.log(data)
             return data;
-        }
+        })
+        return response;
     }
 
     let sessionPromise = getSession()

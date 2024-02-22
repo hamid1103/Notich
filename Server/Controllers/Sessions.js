@@ -63,11 +63,14 @@ export const ConnectToSession = async (req) =>{
 export const CheckForExistingSession = async (req, res) =>{
     let session;
     if(SessionList[req.params.id]){
-        session = await ConnectToSession(req)
+        ConnectToSession(req).then((ses)=>{
+            res.json(ses)
+        })
     }else {
-        session = await StartSession(req)
+        StartSession(req).then((ses)=>{
+            res.json(ses)
+        })
     }
-    res.json(session)
 }
 
 
