@@ -7,6 +7,11 @@ export default {
             colors: {
                 'gold': '#ffd700'
             },
+            height: {
+                '128':'32rem',
+                '120':'28rem',
+                '100':'26rem'
+            }
         },
     },
     plugins: [

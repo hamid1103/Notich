@@ -2,6 +2,9 @@ import {ChatOpenAI} from "@langchain/openai";
 import 'dotenv/config'
 import Sentiment from "sentiment"
 import { HumanMessage, SystemMessage, AIMessage } from "@langchain/core/messages"
+import SavedChatNote from "../Models/SavedChatNote.js";
+import SavedChat from "../Models/SavedChat.js";
+import { FakeListChatModel } from "@langchain/core/utils/testing"
 
 /**
  * Class to initiate an AI instance. There should be one per active session.
@@ -12,10 +15,14 @@ export class NotichBot {
     _context;
     //Current Chat History
     ChatHistory;
+    botName;
     //Keeps track of wether the AI is in use right now. Allow only one request per instance at a time.
     AIStatus;
     //Current Stream contents put in a string.
     StreamString;
+    testBot = new FakeListChatModel({
+        responses: ["Maybe later.", "Not right now"],
+    })
 
     _botStarted = false;
     /**
@@ -23,11 +30,12 @@ export class NotichBot {
      * @param SavedChatHistory found in SavedChat documents
      * @param SavedAISettings found in Note documents
      */
-    constructor(SavedChatHistory = chatBotCharacterContexts.Nick.ChatStart, SavedAISettings = {
+    constructor(SavedChatHistory = chatBotCharacterContexts.Ravella.ChatStart, SavedAISettings = {
         temperature: 0.3
     }) {
         //If SavedChatHistory doesn't exist, start with default character Nick.
         this.ChatHistory = SavedChatHistory
+        this.botName = "Ravella"
         this.AISettings = SavedAISettings
     }
 
@@ -51,7 +59,20 @@ export class NotichBot {
      * Saves chat history and settings
      * @constructor
      */
-    SaveChatHistory(){
+    async SaveChatHistory(NoteID){
+        //Check for existing SavedChatNote document in db
+        let savedChatNote = await SavedChatNote.findOne({Note: NoteID}).populate('SavedChat')
+            //if found
+        if(savedChatNote)
+        {
+            SavedChat.findByIdAndUpdate(savedChatNote.SavedChat._id, {Chat: this.ChatHistory})
+        }else {
+            //create SavedChat
+            let NSavedChat = new SavedChat({Chat: this.ChatHistory})
+            await NSavedChat.save()
+            let createSavedChatNote = new SavedChatNote({SavedChat:NSavedChat._id, Note: NoteID})
+            await createSavedChatNote.save()
+        }
 
     }
 
@@ -64,12 +85,15 @@ export class NotichBot {
         // Send to client for Advice Method
     }
 
-    PromptChat(ChatPrompt){
-        //Get prompt
-        //Add prompt to Chat History
-        //Send Generate Response call
-        // Save stream content to this.StreamString.
-        //
+    async PromptChat(ChatPrompt, NoteID){
+        this.ChatHistory.push(["user", ChatPrompt])
+        console.log("Pushed USER MESSAGE")
+        let resp = await this.model.invoke(this.ChatHistory)
+        //let resp = await this.testBot.invoke(this.ChatHistory)
+        this.ChatHistory.push(["ai",resp.content])
+        console.log(this.ChatHistory)
+        await this.SaveChatHistory(NoteID)
+        return resp
     }
 
     PromptWriting(DocumentPart){
@@ -98,17 +122,17 @@ export const chatBotCharacterContexts = {
     Nick: {
         Language: "eng",
         ChatStart: [
-            new SystemMessage("Your name is Nick. You are a helpful male teacher in a private chat. You help the user with writing their document. You give the user short writing tips, and can give links to topics and websites related to the document." +
-                " You can also complete the user's written text. Always try to end every response with a masculine emoji unless you are writing content for the document. Your responses are always in english."),
-            new AIMessage("Hey there, what are you writing about?")
+            ["system","Your name is Nick. You are a helpful male teacher in a private chat. You help the user with writing their document. You give the user short writing tips, and can give links to topics and websites related to the document." +
+            " You can also complete the user's written text. Always try to end every response with a masculine emoji unless you are writing content for the document. Your responses are always in english."],
+
         ]
     },
     Ravella: {
         Language: "eng",
         ChatStart: [
-            new SystemMessage("Your name is Ravella. You are a helpful female teacher in a private chat. You help the user with writing their document. You give the user short writing tips, and can give links to topics and websites related to the document." +
-                " You can also complete the user's written text. Always try to end every response with a feminine emoji unless you are writing content for the document. Your responses are always in english."),
-            new AIMessage("Hey there, what are you writing about?")
+            ["system", "Your name is Ravella. You are a helpful female teacher in a private chat. You help the user with writing their document. You give the user short writing tips, and can give links to topics and websites related to the document." +
+            " You can also complete the user's written text. Always try to end every response with a feminine emoji unless you are writing content for the document. Your responses are always in english."],
+            ["ai", "Hey there, what are you writing about?"]
         ]
     },
     Sander: {

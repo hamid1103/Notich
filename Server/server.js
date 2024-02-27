@@ -1,11 +1,11 @@
 import * as http from "http";
 import 'dotenv/config'
 import { ChatOpenAI } from "@langchain/openai"
-import apiRouter from "./Routers/api.js";
-import {connectDB} from "./db.js";
-
 import express from 'express';
 import {Server} from "socket.io";
+
+import apiRouter from "./Routers/api.js";
+import {connectDB} from "./db.js";
 import {runSIO} from "./Controllers/Workspace.js";
 const app = express()
 const server = http.createServer(app)
@@ -19,6 +19,11 @@ server.listen(port, ()=>{
 
 connectDB()
 
+app.use(function (req, res, next) {
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    next()
+})
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', apiRouter)
