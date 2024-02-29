@@ -94,6 +94,9 @@
                 CHisotry = [...CHisotry, newAIChatEntry]
                 chatInput.disabled = false;
                 chatInput.value = "";
+                setTimeout(()=>{
+                    ChatHold.scrollTop = ChatHold.scrollHeight;
+                }, 250)
             })
     }
 </script>

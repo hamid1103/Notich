@@ -41,13 +41,14 @@ export class NotichBot {
 
     InitBot = async () =>{
         this._botStarted = true
-        this.model = await new ChatOpenAI({
+        /*this.model = await new ChatOpenAI({
             azureOpenAIApiKey: process.env.AZURE_OPENAI_API_KEY,
             azureOpenAIApiVersion: process.env.OPENAI_API_VERSION,
             azureOpenAIApiInstanceName: process.env.INSTANCE_NAME,
             azureOpenAIApiDeploymentName: process.env.ENGINE_NAME,
             temperature: this.AISettings.temperature,
-        })
+        })*/
+        this.model=this.testBot
         return true
     }
 
@@ -89,7 +90,6 @@ export class NotichBot {
         this.ChatHistory.push(["user", ChatPrompt])
         console.log("Pushed USER MESSAGE")
         let resp = await this.model.invoke(this.ChatHistory)
-        //let resp = await this.testBot.invoke(this.ChatHistory)
         this.ChatHistory.push(["ai",resp.content])
         console.log(this.ChatHistory)
         await this.SaveChatHistory(NoteID)
