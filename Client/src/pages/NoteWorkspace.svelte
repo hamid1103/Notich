@@ -96,7 +96,7 @@
                 chatInput.value = "";
                 setTimeout(()=>{
                     ChatHold.scrollTop = ChatHold.scrollHeight;
-                }, 250)
+                }, 15)
             })
     }
 </script>
