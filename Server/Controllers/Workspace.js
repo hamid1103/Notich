@@ -82,6 +82,7 @@ export const runSIO = async (server) => {
                 console.log("SAVED ")
                 socket.emit("DataSaved")
             })
+            await CurRoom.Bot.SaveChatHistory(CurRoomID);
         })
 
     })
