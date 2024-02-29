@@ -66,7 +66,7 @@ export class NotichBot {
             //if found
         if(savedChatNote)
         {
-            SavedChat.findByIdAndUpdate(savedChatNote.SavedChat._id, {Chat: this.ChatHistory})
+            await SavedChat.findByIdAndUpdate(savedChatNote.SavedChat._id, {Chat: this.ChatHistory})
         }else {
             //create SavedChat
             let NSavedChat = new SavedChat({Chat: this.ChatHistory})
