@@ -77,13 +77,20 @@ export class NotichBot {
 
     }
 
-    PromptAdvice(Document){
-        //Get Chat history
-        // Put in temporary Chat history
-        // Get DocumentPart
-        // Add prompt: Give some writing advice on this document: " `${Document Part}` "
-        // Save stream content to this.StreamString.
-        // Send to client for Advice Method
+    async PromptAdvice(Document, adviceCallback){
+        if(!Document)
+        {
+            return
+        }
+        let chatTempHistory = [this.ChatHistory[0], this.ChatHistory[1]];
+        let docu_string="";
+        Document.forEach((doc, i)=>{
+            docu_string+=`${doc.data.text} \n`
+        })
+        let prompt = `Give some short writing advice on this document: "${docu_string}".`
+        chatTempHistory.push(prompt)
+        let answer = await this.model.invoke(chatTempHistory)
+        adviceCallback(answer);
     }
 
     async PromptChat(ChatPrompt, NoteID){

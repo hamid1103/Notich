@@ -83,6 +83,10 @@ export const runSIO = async (server) => {
                 socket.emit("DataSaved")
             })
             await CurRoom.Bot.SaveChatHistory(CurRoomID);
+            //Give advice
+            await CurRoom.Bot.PromptAdvice(CurRoom.DocumentData.content, (data)=>{
+                socket.emit("GetAdvice", data.content)
+            })
         })
 
     })
