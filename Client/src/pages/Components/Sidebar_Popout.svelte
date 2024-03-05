@@ -11,7 +11,7 @@
                 <div class="w-6 h-1 rotate-45 bg-white rounded-lg"></div>
             </label>
 
-            <div class="fixed top-0 left-0 z-20 w-64 rounded border-0 border-r-4 border-gold h-screen transition-all duration-500 transform -translate-x-full bg-white shadow-lg peer-checked:translate-x-0">
+            <div class="flex justify-center fixed top-0 left-0 z-20 w-64 rounded border-0 border-r-4 border-gold h-screen transition-all duration-500 transform -translate-x-full bg-white shadow-lg peer-checked:translate-x-0">
                 <div class="px-6 py-4">
                     <slot></slot>
                 </div>
@@ -27,8 +27,8 @@
                 <div class="w-6 h-1 -rotate-45 bg-white rounded-lg"></div>
             </label>
 
-            <div class="fixed top-0 right-0 z-20 w-64 rounded border-0 border-l-4 border-gold h-screen transition-all duration-500 transform translate-x-full bg-white shadow-lg peer-checked:-translate-x-0">
-                <div class="px-6 py-4">
+            <div class="flex justify-center fixed top-0 right-0 z-20 w-64 rounded border-0 border-l-4 border-gold h-screen transition-all duration-500 transform translate-x-full bg-white shadow-lg peer-checked:-translate-x-0">
+                <div class="">
                     <slot></slot>
                 </div>
             </div>

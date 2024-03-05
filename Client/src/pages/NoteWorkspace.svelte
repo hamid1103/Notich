@@ -135,7 +135,7 @@
                     <input bind:this={chatInput} type="text" class="border-2 border-black rounded p-2 disabled:bg-gray-500 disabled:text-gold">
                 </form>
 
-                <div bind:this={ChatHold} class="flex flex-col h-128 overflow-y-scroll">
+                <div bind:this={ChatHold} class="flex flex-col h-128 overflow-y-scroll overflow-auto">
 
                         {#each CHisotry as chat, i}
                             {#if i !== 0}
