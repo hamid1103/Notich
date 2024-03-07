@@ -16,7 +16,6 @@
     let socket
     let sessionData;
     let CHisotry;
-
     const getSession = async () => {
         const response = await fetch(`${lurl}/api/session/${id}`, {
             method: "GET",
@@ -123,7 +122,19 @@
 
     <Sidebar_Popout direction="left">
         <h2 class="text-neutral-900 font-bold text-center">Advanced AI Settings</h2>
+        <div class="h-auto w-44 flex items-center align-middle justify-center items-center">
 
+            <div class="flex flex-col pt-2 mt-1">
+                <label for="minmax-range" class="block mb-2 text-sm font-medium text-gray-900 ">Temperature</label>
+                <input on:change={(e)=>{
+                    console.log(e.target.value)
+                    Socket.emit("ChangeTemp", e.target.value)
+                }} id="minmax-range" type="range" min="0" max="10" value="5"
+                       class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+
+            </div>
+
+        </div>
     </Sidebar_Popout>
 
     <Sidebar_Popout checked="true" direction="right">

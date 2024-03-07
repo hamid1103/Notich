@@ -41,22 +41,20 @@ export class NotichBot {
 
     InitBot = async () =>{
         this._botStarted = true
-        /*this.model = await new ChatOpenAI({
+        this.model = await new ChatOpenAI({
             azureOpenAIApiKey: process.env.AZURE_OPENAI_API_KEY,
             azureOpenAIApiVersion: process.env.OPENAI_API_VERSION,
             azureOpenAIApiInstanceName: process.env.INSTANCE_NAME,
             azureOpenAIApiDeploymentName: process.env.ENGINE_NAME,
             temperature: this.AISettings.temperature,
-        })*/
-        this.model = new ChatOpenAI({
-            configuration: {
-                baseURL: "https://neuro.mancer.tech/oai/v1/chat/completions",
-            },
-            modelName: "noromaid",
-            openAIApiKey: process.env.mancerKey,
         })
         //this.model=this.testBot
         return true
+    }
+
+    setTemp(temp){
+        this.model.temperature = temp;
+        this.AISettings.temperature = temp
     }
 
     RemoveChatEntry(Index){
@@ -96,14 +94,17 @@ export class NotichBot {
         })
         let prompt = `Give some short writing advice on this document: "${docu_string}".`
         chatTempHistory.push(prompt)
-        let answer = await this.model.invoke(chatTempHistory)
+        let answer = await this.model.invoke({prompt: chatTempHistory, temperature: this.AISettings.temperature})
         adviceCallback(answer);
     }
 
     async PromptChat(ChatPrompt, NoteID){
         this.ChatHistory.push(["user", ChatPrompt])
         console.log("Pushed USER MESSAGE")
-        let resp = await this.model.invoke(this.ChatHistory)
+        let resp = await this.model.invoke({
+            prompt: this.ChatHistory,
+            temperature: this.AISettings.temperature
+        })
         this.ChatHistory.push(["ai",resp.content])
         console.log(this.ChatHistory)
         await this.SaveChatHistory(NoteID)
