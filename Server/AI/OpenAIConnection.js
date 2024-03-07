@@ -48,7 +48,14 @@ export class NotichBot {
             azureOpenAIApiDeploymentName: process.env.ENGINE_NAME,
             temperature: this.AISettings.temperature,
         })*/
-        this.model=this.testBot
+        this.model = new ChatOpenAI({
+            configuration: {
+                baseURL: "https://neuro.mancer.tech/oai/v1/chat/completions",
+            },
+            modelName: "noromaid",
+            openAIApiKey: process.env.mancerKey,
+        })
+        //this.model=this.testBot
         return true
     }
 
