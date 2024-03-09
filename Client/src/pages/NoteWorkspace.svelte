@@ -6,7 +6,7 @@
     import {BroadcastMessage} from "../lib/Tools.js";
     import Editor from "./Components/Editor.svelte";
     import Sidebar_Popout from "./Components/Sidebar_Popout.svelte";
-    import {CSIO, Socket} from "../lib/WorkspaceSession.js";
+    import {CSIO, Socket, Advice} from "../lib/WorkspaceSession.js";
     import ChatEntry from "./Components/ChatEntry.svelte";
 
     export let id;
@@ -99,6 +99,10 @@
                 }, 15)
             })
     }
+
+
+
+
 </script>
 
 {#await sessionPromise}
@@ -114,7 +118,6 @@
     <div class="flex justify-center w-screen">
         <div class="sticky top-1 bg-gray-100 rounded mb-4 mt-4 w-9/12 p-1">
             <input class="font-bold font-sans bg-gray-100 max-w-sm text-ellipsis disabled:bg-gray-500 disabled:text-gold" value="{ed.DocumentData.name}">
-
         </div>
     </div>
     <div class="flex flex-col justify-center align-middle items-center">
@@ -131,7 +134,7 @@
         <div class="h-auto w-44 flex items-center align-middle justify-center">
             <div class="flex h-full flex-col-reverse align-middle items-center">
                 <!--Chat input here-->
-                <form on:submit="{getNewMessage}" class="flex">
+                <form on:submit="{getNewMessage}" class="flex mt-2">
                     <input bind:this={chatInput} type="text" class="border-2 border-black rounded p-2 disabled:bg-gray-500 disabled:text-gold">
                 </form>
 
@@ -149,6 +152,11 @@
                 </div>
             </div>
         </div>
+        <div class="mt-2">
+            <div role="button" class="btn hover:cursor-pointer hover:bg-green-400 rounded bg-green-300 text-neutral-900 p-3">Find useful resources</div>
+            <div role="button" class="btn hover:cursor-pointer"></div>
+        </div>
+
     </Sidebar_Popout>
 {:catch error}
     <div class="h-screen w-screen flex flex-col justify-center align-middle items-center">

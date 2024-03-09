@@ -2,6 +2,12 @@
 import { io } from "socket.io-client"
 import {lurl} from "./url.js";
 import {navigate} from "svelte-routing";
+import {writable} from "svelte/store";
+
+export const Advice = writable({
+    advice: "",
+    show: false
+})
 
 export let Socket;
 export const CSIO = (sd)=>{
@@ -23,5 +29,9 @@ export const CSIO = (sd)=>{
         navigate("/app");
         location.reload()
     })
+
+    socket.on("GetAdvice",  (adviceText)=>{
+        Advice.set({advice: adviceText, show: true})
+    });
 
 }

@@ -12,6 +12,7 @@
     })
 
     import EditorJS from '@editorjs/editorjs';
+    import {Advice} from "../../lib/WorkspaceSession.js";
 
     let isSaving = false;
     let editorjsContentHolder;
@@ -189,3 +190,20 @@
         <div id="editorjs" bind:this={editorjsContentHolder} class="rounded border-2 p-2" on:focusin={blockFocus} on:focusout={blockUnfocus}></div>
     </article>
 </div>
+{#if $Advice.show}
+    {#key $Advice.advice}
+        <div class="flex mt-12 inset-x-0 mx-auto bottom-3 p-3 bg-white border-4 border-gold rounded w-6/12 h-20 items-center">
+            <img class="relative origin-bottom h-20" src="/prof.png">
+            <div class="text-wrap h-16 overflow-y-auto font-sans overflow-y-auto">
+                {$Advice.advice}
+            </div>
+            <div class="w-1/6 flex justify-center ml-2.5 hover:stroke-amber-700 hover:cursor-pointer stroke-red-500" on:click={()=>{
+                Advice.set({show: false, advice: $Advice.advice})
+            }}>
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </div>
+        </div>
+    {/key}
+{/if}

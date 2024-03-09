@@ -87,7 +87,7 @@ export class NotichBot {
         Document.forEach((doc, i)=>{
             docu_string+=`${doc.data.text} \n`
         })
-        let prompt = `Give some short writing advice on this document: "${docu_string}".`
+        let prompt = `Give one or two short sentences of writing advice on this document: "${docu_string}". Do not start the response with something like "sure". `
         chatTempHistory.push(prompt)
         let answer = await this.model.invoke(chatTempHistory)
         adviceCallback(answer);
