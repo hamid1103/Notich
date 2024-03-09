@@ -75,6 +75,14 @@ export const runSIO = async (server) => {
             socket.broadcast.emit("EnableBlock", bindex)
         })
 
+        socket.on("ChangeTemp", (temp)=>{
+            if(temp===0){
+                CurRoom.Bot.setTemp(temp)
+            }else{
+                CurRoom.Bot.setTemp(temp/10)
+            }
+        })
+
         socket.on("SaveDoc", async (data)=>{
             CurRoom.DocumentData.content = data.blocks
             await Note.findByIdAndUpdate(CurRoomID, { content: data.blocks}).then(()=>{
