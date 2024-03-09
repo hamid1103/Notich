@@ -132,7 +132,7 @@
                 <input on:change={(e)=>{
                     console.log(e.target.value)
                     Socket.emit("ChangeTemp", e.target.value)
-                }} id="minmax-range" type="range" min="0" max="10" value="5"
+                }} id="minmax-range" type="range" min="0" max="10" value="3"
                        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
 
             </div>
@@ -140,7 +140,7 @@
         </div>
     </Sidebar_Popout>
 
-    <Sidebar_Popout checked="true" direction="right">
+    <Sidebar_Popout checked="true" direction="right" title="AI Tools">
         <h2 class="text-neutral-900 font-bold text-center">Chat with the bot</h2>
         <div class="h-auto w-44 flex items-center align-middle justify-center">
             <div class="flex h-full flex-col-reverse align-middle items-center">
@@ -167,7 +167,6 @@
             <div role="button" class="btn hover:cursor-pointer hover:bg-green-400 rounded bg-green-300 text-neutral-900 p-3">Find useful resources</div>
             <div role="button" class="btn hover:cursor-pointer"></div>
         </div>
-
     </Sidebar_Popout>
 {:catch error}
     <div class="h-screen w-screen flex flex-col justify-center align-middle items-center">
