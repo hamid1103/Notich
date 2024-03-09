@@ -120,7 +120,7 @@
         </div>
     </div>
     <div class="flex flex-col justify-center align-middle items-center">
-        <Editor data={ed.DocumentData} socket={Socket}/>
+        <Editor data={ed.DocumentData} socket={Socket} ci={chatInput}/>
     </div>
 
     <Sidebar_Popout direction="left">

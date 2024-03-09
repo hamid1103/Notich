@@ -5,7 +5,7 @@
     import Paragraph from '@editorjs/paragraph';
     import Header from '@editorjs/header'
 
-    export let data, socket;
+    export let data, socket, ci;
 
     onDestroy(() => {
         socket.emit("Leave")
@@ -75,6 +75,7 @@
     })
 
     let SaveDoc = async ()=>{
+        ci.disabled = true
         if(isSaving)
             return
         isSaving = true
@@ -94,6 +95,7 @@
     socket.on("DataSaved", ()=>{
         console.log("DATA SAVED, " + DocumentNodes.length)
         isSaving = false
+        ci.disabled = false
         for (let i = 0; i<DocumentNodes.length; i++){
             let item = DocumentNodes.item(i)
             item.contentEditable = true
