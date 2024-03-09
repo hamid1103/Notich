@@ -34,4 +34,8 @@ export const CSIO = (sd)=>{
         Advice.set({advice: adviceText, show: true})
     });
 
+    socket.on("", (text)=>{
+
+    })
+
 }

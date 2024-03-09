@@ -163,10 +163,11 @@
                 </div>
             </div>
         </div>
-        <div class="mt-2">
-            <div role="button" class="btn hover:cursor-pointer hover:bg-green-400 rounded bg-green-300 text-neutral-900 p-3">Find useful resources</div>
-            <div role="button" class="btn hover:cursor-pointer"></div>
-        </div>
+
+        <button class="btn hover:cursor-pointer hover:bg-green-400 rounded bg-green-300 text-neutral-900 mt-3">
+            Find useful resources
+        </button>
+
     </Sidebar_Popout>
 {:catch error}
     <div class="h-screen w-screen flex flex-col justify-center align-middle items-center">

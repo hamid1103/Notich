@@ -1,2 +1,2 @@
-const lurl = "http://localhost:3000"
+let lurl = ""
 export {lurl};

@@ -1,16 +1,18 @@
-import {ChatOpenAI} from "@langchain/openai";
+import {ChatOpenAI, OpenAIEmbeddings} from "@langchain/openai";
 import 'dotenv/config'
 import Sentiment from "sentiment"
 import { HumanMessage, SystemMessage, AIMessage } from "@langchain/core/messages"
 import SavedChatNote from "../Models/SavedChatNote.js";
 import SavedChat from "../Models/SavedChat.js";
 import { FakeListChatModel } from "@langchain/core/utils/testing"
+import {WebPDFLoader} from "langchain/document_loaders/web/pdf";
 
 /**
  * Class to initiate an AI instance. There should be one per active session.
  */
 export class NotichBot {
     model;
+    adaModel;
     AISettings;
     _context;
     //Current Chat History
@@ -41,6 +43,7 @@ export class NotichBot {
 
     InitBot = async () =>{
         this._botStarted = true
+
         this.model = await new ChatOpenAI({
             azureOpenAIApiKey: process.env.AZURE_OPENAI_API_KEY,
             azureOpenAIApiVersion: process.env.OPENAI_API_VERSION,
@@ -94,15 +97,17 @@ export class NotichBot {
         })
         let prompt = `Give one or two short sentences of writing advice on this document: "${docu_string}". Do not start the response with something like "sure".`
         chatTempHistory.push(prompt)
-        let answer = await this.model.invoke({prompt: chatTempHistory, temperature: this.AISettings.temperature})
+        let answer = await this.model.invoke(chatTempHistory,
+            {temperature: this.AISettings.temperature})
         adviceCallback(answer);
     }
 
     async PromptChat(ChatPrompt, NoteID){
         this.ChatHistory.push(["user", ChatPrompt])
         console.log("Pushed USER MESSAGE")
-        let resp = await this.model.invoke({
-            prompt: this.ChatHistory,
+        let resp = await this.model.invoke(
+            this.ChatHistory,
+            {
             temperature: this.AISettings.temperature
         })
         this.ChatHistory.push(["ai",resp.content])

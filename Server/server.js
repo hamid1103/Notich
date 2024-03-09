@@ -3,10 +3,17 @@ import 'dotenv/config'
 import { ChatOpenAI } from "@langchain/openai"
 import express from 'express';
 import {Server} from "socket.io";
+import bodyParser from "body-parser";
 
 import apiRouter from "./Routers/api.js";
 import {connectDB} from "./db.js";
 import {runSIO} from "./Controllers/Workspace.js";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import * as path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const app = express()
 const server = http.createServer(app)
 runSIO(server)
@@ -26,18 +33,10 @@ app.use(function (req, res, next) {
 })
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+/*let indexpath = path.join(__dirname+'/dist')
+app.use(express.static(__dirname+ '/dist'))
+let assetsPath = path.join(__dirname, '/dist/assets');
+app.use(express.static(assetsPath));*/
+
 app.use('/api', apiRouter)
-
-
-//Send compiled svelte files
-//app.get('/', )
-
-
-/**
- * Await answer
- * const joke = await model.invoke("Tell me a Javascript joke!")
- *
- *
- *
- *
- * */
