@@ -1,2 +1,2 @@
-let lurl = "http://165.22.192.90:3000"
+let lurl = "http://127.0.0.1:3000"
 export {lurl};

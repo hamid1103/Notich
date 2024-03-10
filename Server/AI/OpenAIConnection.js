@@ -19,7 +19,7 @@ export class NotichBot {
     ChatHistory;
     botName;
     //Keeps track of wether the AI is in use right now. Allow only one request per instance at a time.
-    AIStatus;
+    Busy = false;
     //Current Stream contents put in a string.
     StreamString;
     testBot = new FakeListChatModel({
@@ -85,6 +85,10 @@ export class NotichBot {
 
     }
 
+    isBusy(){
+        return this.Busy;
+    }
+
     async PromptAdvice(Document, adviceCallback){
         if(!Document)
         {
@@ -97,19 +101,28 @@ export class NotichBot {
         })
         let prompt = `Give one or two short sentences of writing advice on this document: "${docu_string}". Do not start the response with something like "sure".`
         chatTempHistory.push(prompt)
+        if(this.Busy)
+        {
+            adviceCallback({content:"AI is busy right now."});
+            return
+        }
+        this.Busy = true;
         let answer = await this.model.invoke(chatTempHistory,
             {temperature: this.AISettings.temperature})
+        this.Busy = false;
         adviceCallback(answer);
     }
 
     async PromptChat(ChatPrompt, NoteID){
         this.ChatHistory.push(["user", ChatPrompt])
         console.log("Pushed USER MESSAGE")
+        this.Busy = true;
         let resp = await this.model.invoke(
             this.ChatHistory,
             {
             temperature: this.AISettings.temperature
         })
+        this.Busy = false;
         this.ChatHistory.push(["ai",resp.content])
         console.log(this.ChatHistory)
         await this.SaveChatHistory(NoteID)

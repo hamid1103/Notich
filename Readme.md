@@ -8,6 +8,7 @@ It uses langchain, mongoose, socket.io and express.js for the backend and svelte
 ## Requirements
 For the back-end, you need to have mongodb database. You can run one locally or one in mongo's cloud. You will need to change the `CMDBPW` variable in the env and change the db url in `/Server/db.js`
 
+You also need a key for the news api https://newsapi.org
 ## .ENV File
 The .env file needs to be in the `/Server` folder. 
 > OPENAI_API_TYPE=  
